@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeehiveManagementSystem
 {
-    abstract class Bee
+    abstract class Bee : IWorker
     {
         public Bee(string job)
         {
@@ -19,7 +19,7 @@ namespace BeehiveManagementSystem
 
 
         public void WorkTheNextShift()
-        {
+       {
             if (HoneyVault.ConsumeHoney(CostPerShift))
             {
                 DoJob();

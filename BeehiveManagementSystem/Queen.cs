@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace BeehiveManagementSystem
 {
-    class Queen : Bee
+    class Queen : Bee, INotifyPropertyChanged
     {
         public const float EGGS_PER_SHIFT = 0.45f;
         public const float HONEY_PER_UNASSIGNED_WORKER = 0.5f;
@@ -19,7 +20,14 @@ namespace BeehiveManagementSystem
         public string StatusReport { get; private set; }
 
 
-        private Bee[] workers = new Bee[0];
+        private IWorker [] workers = new IWorker[0];
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public Queen() : base("Queen")
         {
@@ -32,7 +40,7 @@ namespace BeehiveManagementSystem
         /// Expand the workers array by one slot and add a Bee reference.
         /// </summary>
         /// <param name="worker">Worker to add to the workers array.</param>
-        private void AddWorker(Bee worker)
+        private void AddWorker(IWorker worker)
         {
             if (unassignedWorkers >= 1)
             {
@@ -62,7 +70,7 @@ namespace BeehiveManagementSystem
         protected override void DoJob()
         {
             eggs += EGGS_PER_SHIFT;
-            foreach (Bee worker in workers)
+            foreach (IWorker worker in workers)
             {
                 worker.WorkTheNextShift();
             }
@@ -74,12 +82,13 @@ namespace BeehiveManagementSystem
         {
             StatusReport = $"Vault Report:\n{HoneyVault.StatusReport}\n\nEgg Count: {eggs:0.0}\nUnassigned Workers: {unassignedWorkers:0.0}\n" +
                 $"{WorkerStatus("Nectar Collector")}\n{WorkerStatus("Honey Manufacturer")}\n{WorkerStatus("Egg Care")}\nTOTAL WORKERS: {workers.Length}";
+            OnPropertyChanged("StatusReport");
         }
 
         private string WorkerStatus(string jobTitle)
         {
             int count = 0;
-            foreach (Bee worker in workers)
+            foreach (IWorker worker in workers)
             {
                 if (worker.Job == jobTitle) count++;
             }

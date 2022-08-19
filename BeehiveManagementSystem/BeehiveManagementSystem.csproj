@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="EggCare.cs" />
     <Compile Include="HoneyManufacturer.cs" />
+    <Compile Include="IWorker.cs" />
     <Compile Include="NectarCollector.cs" />
     <Compile Include="Queen.cs" />
     <Page Include="MainWindow.xaml">
